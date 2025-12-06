@@ -1,7 +1,7 @@
 
 [miscellaneous]
 
-path=/run/media/kushagra/SharedLinux/Flac Songs
+path=~/mnt/myphone/Music/Flac Songs
 allowNotifications=1
 hideLogo=0
 hideHelp=0

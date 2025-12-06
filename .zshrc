@@ -10,6 +10,7 @@ export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/go/bin"
 export OLLAMA_MODELS="/run/media/kushagra/SharedLinux/ollama-models"
+export PATH="$HOME/dotfiles/bin:$PATH"
 
 #  Load scripts from ~/.zshrc.d 
 if [ -d "$HOME/.zshrc.d" ]; then
