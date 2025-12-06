@@ -1,0 +1,42 @@
+/* Matugen v2 GTK4 template */
+
+@define-color primary_color {{ palette.primary }};
+@define-color on_primary_color {{ palette.on_primary }};
+
+@define-color background_color {{ palette.background }};
+@define-color on_background_color {{ palette.on_background }};
+
+@define-color surface_color {{ palette.surface }};
+@define-color on_surface_color {{ palette.on_surface }};
+
+@define-color outline_color {{ palette.outline }};
+
+window, dialog {
+    background-color: @background_color;
+    color: @on_background_color;
+}
+
+headerbar, titlebar {
+    background-color: @surface_color;
+    color: @on_surface_color;
+}
+
+button {
+    background-color: @surface_color;
+    color: @on_surface_color;
+}
+
+button:hover {
+    background-color: @primary_color;
+    color: @on_primary_color;
+}
+
+entry, textview, view, .view {
+    background-color: @surface_color;
+    color: @on_surface_color;
+    border-color: @outline_color;
+}
+
+scrollbar slider {
+    background-color: @primary_color;
+}

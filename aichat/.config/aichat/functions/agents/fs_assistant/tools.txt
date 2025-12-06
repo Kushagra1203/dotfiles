@@ -1,0 +1,11 @@
+fs_cat.sh
+fs_write.sh
+fs_patch.sh
+fs_ls.sh
+guess_filename.sh
+fuzzy_find.sh
+select_from_small_list.sh
+fzf_fallback.sh
+prepare_kv_edit.sh
+confirm_and_write.sh
+web_search.sh

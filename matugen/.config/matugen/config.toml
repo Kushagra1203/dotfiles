@@ -1,0 +1,75 @@
+[config]
+version = 2
+caching = true
+
+[theme]
+type = "material-you"
+
+# ─────────────────────────────────────────────
+# GTK3 + GTK4 (already existed)
+# ─────────────────────────────────────────────
+[templates.gtk3]
+input_path = "~/.config/matugen/templates/gtk/colors.template.css"
+output_path = "~/.config/gtk-3.0/colors.css"
+
+[templates.gtk4]
+input_path = "~/.config/matugen/templates/gtk/colors.template.css"
+output_path = "~/.config/gtk-4.0/colors.css"
+
+
+# ─────────────────────────────────────────────
+# Kitty terminal
+# ─────────────────────────────────────────────
+[templates.kitty]
+input_path = "~/.config/matugen/templates/kitty/kitty.conf.template"
+output_path = "~/.config/kitty/kitty-theme.conf"
+
+
+# ─────────────────────────────────────────────
+# Wofi launcher
+# ─────────────────────────────────────────────
+[templates.wofi]
+input_path = "~/.config/matugen/templates/wofi/style.css.template"
+output_path = "~/.config/wofi/style.css"
+
+
+# ─────────────────────────────────────────────
+# Hyprland colors include file
+# ─────────────────────────────────────────────
+[templates.hypr]
+input_path = "~/.config/matugen/templates/hypr/colors.conf.template"
+output_path = "~/.config/hypr/colors.conf"
+
+
+# ─────────────────────────────────────────────
+# Qt6 / KDE
+# ─────────────────────────────────────────────
+[templates.qt6ct]
+input_path = '~/.config/matugen/templates/qt6/qt6.conf.template'
+output_path = '~/.config/qt6ct/colors/matugen.conf'
+
+# ─────────────────────────────────────────────
+# Kew
+# ─────────────────────────────────────────────
+[templates.kew]
+input_path = "~/.config/matugen/templates/kew/material.theme.template"
+output_path = "~/.config/kew/themes/material.theme"
+
+# ─────────────────────────────────────────────
+# zathura
+# ─────────────────────────────────────────────
+[templates.zathura]
+input_path = '~/.config/matugen/templates/zathurarc/matugen-zathurarc.template'
+output_path = '~/.config/zathura/matugen-zathurarc'
+
+[templates.nvim]
+input_path = "~/.config/matugen/templates/nvim/matugen.lua.template"
+output_path = "~/.config/nvim/colors/matugen.lua"
+
+[templates.lualine]
+input_path = "~/.config/matugen/templates/nvim/lualine.lua.template"
+output_path = "~/.config/nvim/lua/plugins/lualine.lua"
+
+[templates.rofi]
+input_path = '~/.config/matugen/templates/rofi/colors.rasi.template'
+output_path = '~/.config/rofi/colors.rasi'

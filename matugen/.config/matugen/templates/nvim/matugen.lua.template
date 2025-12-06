@@ -1,0 +1,41 @@
+-- =====================================================
+-- Matugen → Neovim Colorscheme
+-- Generated from your Material You palette
+-- =====================================================
+
+local C = {
+  bg        = "{{colors.surface.default.hex}}",
+  bg_dark   = "{{colors.surface_variant.dark.hex}}",
+  bg_light  = "{{colors.surface_variant.light.hex}}",
+  fg        = "{{colors.on_surface.default.hex}}",
+  fg_dim    = "{{colors.on_surface_variant.default.hex}}",
+  primary   = "{{colors.primary.default.hex}}",
+  secondary = "{{colors.secondary.default.hex}}",
+  tertiary  = "{{colors.tertiary.default.hex}}",
+  error     = "{{colors.error.default.hex}}",
+}
+
+vim.api.nvim_set_hl(0, "Normal",       { fg = C.fg, bg = C.bg })
+vim.api.nvim_set_hl(0, "CursorLine",   { bg = C.bg_dark })
+vim.api.nvim_set_hl(0, "NormalFloat",  { fg = C.fg, bg = "NONE" })
+vim.api.nvim_set_hl(0, "FloatBorder",  { fg = C.fg_dim, bg = "NONE" })
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = C.primary })
+vim.api.nvim_set_hl(0, "LineNr",       { fg = C.fg_dim })
+vim.api.nvim_set_hl(0, "Visual",       { bg = C.secondary })
+
+vim.api.nvim_set_hl(0, "StatusLine",   { fg = C.fg, bg = C.bg_dark })
+vim.api.nvim_set_hl(0, "StatusLineNC", { fg = C.fg_dim, bg = C.bg_dark })
+
+vim.api.nvim_set_hl(0, "Identifier", { fg = C.fg })
+vim.api.nvim_set_hl(0, "Function",   { fg = C.primary })
+vim.api.nvim_set_hl(0, "Keyword",    { fg = C.secondary })
+vim.api.nvim_set_hl(0, "String",     { fg = C.tertiary })
+vim.api.nvim_set_hl(0, "Comment",    { fg = C.fg_dim, italic = true })
+
+vim.api.nvim_set_hl(0, "DiagnosticError", { fg = C.error })
+vim.api.nvim_set_hl(0, "DiagnosticWarn",  { fg = C.tertiary })
+vim.api.nvim_set_hl(0, "DiagnosticInfo",  { fg = C.primary })
+vim.api.nvim_set_hl(0, "DiagnosticHint",  { fg = C.secondary })
+
+vim.g.colors_name = "matugen"
+

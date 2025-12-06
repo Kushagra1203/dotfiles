@@ -1,0 +1,65 @@
+[General]
+Name=Matugen
+ColorScheme=Matugen
+
+[Colors:Window]
+BackgroundNormal {{colors.surface.dark.hex}}
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:Window]
+BackgroundAlternate {{colors.surface_variant.dark.hex}}
+ForegroundAlternate {{colors.on_surface_variant.dark.hex}}
+
+[Colors:Button]
+BackgroundNormal {{colors.surface_variant.dark.hex}}
+ForegroundNormal {{colors.on_surface_variant.dark.hex}}
+BackgroundAlternate {{colors.surface.dark.hex}}
+ForegroundAlternate {{colors.on_surface.dark.hex}}
+
+[Colors:View]
+BackgroundNormal {{colors.surface.dark.hex}}
+ForegroundNormal {{colors.on_surface.dark.hex}}
+BackgroundAlternate {{colors.surface_variant.dark.hex}}
+ForegroundAlternate {{colors.on_surface_variant.dark.hex}}
+
+[Colors:Selection]
+BackgroundNormal {{colors.primary.dark.hex}}
+ForegroundNormal {{colors.on_primary.dark.hex}}
+
+[Colors:Tooltip]
+BackgroundNormal {{colors.surface.dark.hex}}
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:ProgressBar]
+BackgroundNormal {{colors.primary.dark.hex}}
+ForegroundNormal {{colors.on_primary.dark.hex}}
+
+[Colors:TitleBar]
+BackgroundNormal {{colors.surface.dark.hex}}
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:Header]
+BackgroundNormal {{colors.surface.dark.hex}}
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:Highlight]
+BackgroundNormal {{colors.primary.dark.hex}}
+ForegroundNormal {{colors.on_primary.dark.hex}}
+
+[Colors:WindowText]
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:Text]
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:ButtonText]
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:ViewText]
+ForegroundNormal {{colors.on_surface.dark.hex}}
+
+[Colors:HighlightedText]
+ForegroundNormal {{colors.on_primary.dark.hex}}
+
+[Colors:Accent]
+ForegroundNormal {{colors.primary.dark.hex}}

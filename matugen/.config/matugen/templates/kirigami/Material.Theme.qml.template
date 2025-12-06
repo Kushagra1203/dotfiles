@@ -1,0 +1,15 @@
+import QtQuick
+import org.kde.kirigami as Kirigami
+
+Kirigami.Theme {
+    id: themeOverride
+
+    backgroundColor: "{{colors.surface.dark.hex}}"
+    textColor: "{{colors.on_surface.dark.hex}}"
+    highlightColor: "{{colors.primary.dark.hex}}"
+    highlightedTextColor: "{{colors.on_primary.dark.hex}}"
+    buttonBackgroundColor: "{{colors.primary_container.dark.hex}}"
+    buttonTextColor: "{{colors.on_primary_container.dark.hex}}"
+    viewBackgroundColor: "{{colors.surface_container.dark.hex}}"
+    accentColor: "{{colors.primary.dark.hex}}"
+}

@@ -1,0 +1,17 @@
+[Color]
+Window={{colors.surface.dark.hex}}
+WindowText={{colors.on_surface.dark.hex}}
+Base={{colors.surface.dark.hex}}
+AlternateBase={{colors.surface_variant.dark.hex}}
+Text={{colors.on_surface.dark.hex}}
+Button={{colors.secondary.dark.hex}}
+ButtonText={{colors.on_secondary.dark.hex}}
+Highlight={{colors.primary.dark.hex}}
+HighlightedText={{colors.on_primary.dark.hex}}
+ToolTipBase={{colors.surface.dark.hex}}
+ToolTipText={{colors.on_surface.dark.hex}}
+
+[PaletteEntry]
+Active={{colors.primary.dark.hex}}
+Inactive={{colors.surface_variant.dark.hex}}
+Disabled={{colors.surface_variant.dark.hex}}

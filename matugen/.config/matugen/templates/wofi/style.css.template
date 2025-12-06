@@ -1,0 +1,30 @@
+/* Base surface MUST be transparent for Hyprland blur */
+window {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: {{colors.on_surface.dark.hex}};
+}
+
+/* Real background applied to the INNER widget */
+#outer-box {
+    background-color: {{colors.surface.dark.hex}}33;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 16px;
+}
+
+/* Input box */
+#input {
+    background-color: {{colors.surface_variant.dark.hex}}44;
+    color: {{colors.on_surface_variant.dark.hex}};
+    border-radius: 12px;
+    padding: 6px;
+}
+
+/* Selected entry */
+#entry:selected {
+    background-color: {{colors.primary.dark.hex}}55;
+    color: {{colors.on_primary.dark.hex}};
+    border-radius: 12px;
+}

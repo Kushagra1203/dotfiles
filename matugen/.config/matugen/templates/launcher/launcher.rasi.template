@@ -1,0 +1,6 @@
+* {
+    background: {{theme.colors.dark.surface}};
+    foreground: {{theme.colors.dark.on_surface}};
+    accent: {{theme.colors.dark.primary}};
+    accent-fg: {{theme.colors.dark.on_primary}};
+}

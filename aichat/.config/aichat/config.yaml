@@ -1,0 +1,171 @@
+# =========================================
+# ---- llm ----
+# =========================================
+model: cerebras:llama-3.3-70b
+temperature: null
+top_p: null
+
+# =========================================
+# ---- behavior ----
+# =========================================
+stream: false
+save: true
+keybindings: vi
+editor: null
+
+wrap: auto
+wrap_code: false
+
+# =========================================
+# ---- function-calling ----
+# =========================================
+function_calling: true
+mapping_tools:
+  fs: "fs_cat,fs_ls,fs_mkdir,fs_rm,fs_write"
+  web: "web_search_tavily,fetch_url_via_curl"
+  exec: "execute_js_code,execute_py_code"
+  functions: "guess_filename,fuzzy_find,select_from_small_list,fzf_fallback,prepare_kv_edit,confirm_and_write,web_search"
+use_tools: 'fs,web,exec,functions'
+
+# =========================================
+# ---- prelude ----
+# =========================================
+repl_prelude: null
+cmd_prelude: null
+agent_prelude: null
+
+# =========================================
+# ---- session ----
+# =========================================
+save_session: true
+compress_threshold: 4000
+
+summarize_prompt: "Summarize the discussion briefly in 200 words or less to use as a prompt for future context."
+summary_prompt: "This is a summary of the chat history as a recap: "
+
+# =========================================
+# ---- RAG ----
+# =========================================
+rag_embedding_model: ollama/nomic-embed-text:v1.5
+rag_reranker_model: null
+rag_top_k: 5
+
+rag_chunk_size: 1500
+rag_chunk_overlap: 100
+
+rag_template: |
+  Answer the query based on the context while respecting the rules.
+
+  <context>
+  __CONTEXT__
+  </context>
+
+  <rules>
+  - If you don't know, just say so.
+  - If you are not sure, ask for clarification.
+  - Answer in the same language as the user query.
+  - If the context appears unreadable or of poor quality, tell the user then answer as best as you can.
+  - If the answer is not in the context but you think you know the answer, explain that to the user then answer with your own knowledge.
+  - Answer directly and without using xml tags.
+  </rules>
+
+  <user_query>
+  __INPUT__
+  </user_query>
+
+# =========================================
+# ---- document loaders ----
+# =========================================
+document_loaders:
+  pdf: "pdftotext $1 -"
+  docx: "pandoc --to plain $1"
+
+# =========================================
+# ---- appearance ----
+# =========================================
+highlight: true
+light_theme: false
+
+left_prompt:
+  "{color.green}{?session {?agent {agent}>}{session}{?role /}}{!session {?agent {agent}>}}{role}{?rag @{rag}}{color.cyan}{?session )}{!session >}{color.reset} "
+
+right_prompt:
+  "{color.purple}{?session {?consume_tokens {consume_tokens}({consume_percent}%)}{!consume_tokens {consume_tokens}}}{color.reset}"
+
+# =========================================
+# ---- misc ----
+# =========================================
+serve_addr: 127.0.0.1:8000
+user_agent: null
+save_shell_history: true
+sync_models_url: https://raw.githubusercontent.com/sigoden/aichat/refs/heads/main/models.yaml
+
+# =========================================
+# ---- clients ----
+# =========================================
+clients:
+
+  # ---------- CEREBRAS ----------
+  - type: openai-compatible
+    name: cerebras
+    api_base: https://api.cerebras.ai/v1
+    models:
+      - name: llama3.1-8b
+        max_input_tokens: 131072
+      - name: llama-3.3-70b
+        max_input_tokens: 131072
+      - name: qwen-3-32b
+        max_input_tokens: 131072
+      - name: gpt-oss-120b
+        max_input_tokens: 131072
+
+  # ---------- OLLAMA EMBEDDING PROXY ----------
+  - type: openai-compatible
+    name: ollama
+    api_base: http://127.0.0.1:9999/v1
+    models:
+      - name: nomic-embed-text:v1.5
+        type: embedding
+        max_tokens_per_chunk: 8192
+        default_chunk_size: 1500
+        max_batch_size: 32
+
+  # ---------- GROQ ----------
+  - type: openai-compatible
+    name: groq
+    api_base: https://api.groq.com/openai/v1
+    models:
+      - name: openai/gpt-oss-120b
+        max_input_tokens: 131072
+      - name: llama-3.3-70b-versatile
+        max_input_tokens: 131072
+      - name: llama-3.1-8b-instant
+        max_input_tokens: 131072
+
+  # ---------- GEMINI ----------
+  - type: openai-compatible
+    name: gemini
+    api_base: https://generativelanguage.googleapis.com/v1beta/openai/
+    models:
+      - name: gemini-2.5-flash
+        max_input_tokens: 1048576
+      - name: gemini-2.0-flash
+        max_input_tokens: 1048576
+      - name: gemini-embedding-001
+        type: embedding
+        max_tokens_per_chunk: 2048
+        default_chunk_size: 1500
+        max_batch_size: 100
+
+  # ---------- OPENROUTER ----------
+  - type: openai-compatible
+    name: openrouter
+    api_base: https://openrouter.ai/api/v1
+    models:
+      - name: x-ai/grok-4.1-fast:free
+        max_input_tokens: 131072
+      - name: qwen/qwen3-coder:free
+        max_input_tokens: 131072
+      - name: tngtech/deepseek-r1t2-chimera:free
+        max_input_tokens: 131072
+

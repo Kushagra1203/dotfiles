@@ -1,0 +1,41 @@
+/* MAIN WINDOW */
+QMainWindow, QMainWindow QWidget {
+    background-color: {{colors.surface.dark.hex}};
+    color: {{colors.on_surface.dark.hex}};
+}
+
+/* CENTRAL VIEW (ICONS, LISTS) */
+QAbstractItemView {
+    background: {{colors.surface.dark.hex}};
+    color: {{colors.on_surface.dark.hex}};
+    alternate-background-color: {{colors.surface_variant.dark.hex}};
+    selection-background-color: {{colors.primary.dark.hex}};
+    selection-color: {{colors.on_primary.dark.hex}};
+}
+
+/* SIDEBAR */
+QTreeView, QTreeView::item {
+    background: {{colors.surface.dark.hex}};
+    color: {{colors.on_surface.dark.hex}};
+}
+QTreeView::item:selected {
+    background: {{colors.primary.dark.hex}};
+    color: {{colors.on_primary.dark.hex}};
+}
+
+/* TOOLBAR */
+QToolBar {
+    background: {{colors.surface.dark.hex}};
+    border: none;
+}
+QToolButton {
+    background: transparent;
+    color: {{colors.on_surface.dark.hex}};
+}
+
+/* LINE EDITS / PATH BAR */
+QLineEdit {
+    background: {{colors.surface_variant.dark.hex}};
+    color: {{colors.on_surface.dark.hex}};
+    border: 1px solid {{colors.outline.dark.hex}};
+}

@@ -1,0 +1,9 @@
+import QtQuick
+import org.kde.kirigami as Kirigami
+
+Kirigami.Theme {
+    backgroundColor: "{{colors.surface.dark.hex}}"
+    textColor: "{{colors.on_surface.dark.hex}}"
+    highlightColor: "{{colors.primary.dark.hex}}"
+    highlightedTextColor: "{{colors.on_primary.dark.hex}}"
+}

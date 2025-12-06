@@ -1,0 +1,12 @@
+/* GTK-compatible Matugen template using RGBA output */
+
+@define-color primary rgba({{colors.primary.default.rgb.r}}, {{colors.primary.default.rgb.g}}, {{colors.primary.default.rgb.b}}, 1.0);
+@define-color on_primary rgba({{colors.on_primary.default.rgb.r}}, {{colors.on_primary.default.rgb.g}}, {{colors.on_primary.default.rgb.b}}, 1.0);
+
+@define-color background rgba({{colors.background.default.rgb.r}}, {{colors.background.default.rgb.g}}, {{colors.background.default.rgb.b}}, 1.0);
+@define-color on_background rgba({{colors.on_background.default.rgb.r}}, {{colors.on_background.default.rgb.g}}, {{colors.on_background.default.rgb.b}}, 1.0);
+
+@define-color surface rgba({{colors.surface.default.rgb.r}}, {{colors.surface.default.rgb.g}}, {{colors.surface.default.rgb.b}}, 1.0);
+@define-color on_surface rgba({{colors.on_surface.default.rgb.r}}, {{colors.on_surface.default.rgb.g}}, {{colors.on_surface.default.rgb.b}}, 1.0);
+
+@define-color outline rgba({{colors.outline.default.rgb.r}}, {{colors.outline.default.rgb.g}}, {{colors.outline.default.rgb.b}}, 1.0);

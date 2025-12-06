@@ -1,0 +1,7 @@
+(
+    mpd_address: "127.0.0.1:6600",
+    mpd_timeout: 5,
+    show_cover: true,
+    cover_method: "kitty",
+    theme: "default",
+)
