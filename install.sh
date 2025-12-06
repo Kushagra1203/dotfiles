@@ -1,67 +1,87 @@
 #!/bin/bash
-# install.sh - The Master Setup Script for Fedora Minimal
+# install.sh - The Master Setup Script for Fedora Minimal (Asahi)
 
-set -e # Exit immediately if a command fails
+# We use set -e to stop on errors, but we will handle specific errors manually
+set -e 
 
 echo "==========================================="
 echo "   Kushagra's Fedora Master Setup Script   "
 echo "==========================================="
 
+# 0. Safety Check: Ensure we are in the right directory
+if [ ! -f "install.sh" ]; then
+    echo "❌ Error: You are not in the dotfiles directory."
+    echo "   Please run: cd ~/dotfiles && ./install.sh"
+    exit 1
+fi
+
 # 1. Update System
 echo "🔄 Updating system repositories..."
 sudo dnf update -y
 
-# 2. Install Git, Stow, and Build Tools
-echo "📦 Installing Git, Stow, and Compilers..."
-sudo dnf install -y git stow
-# specific group install for compiling (needed for nchat/kew)
+# 2. Install Essentials
+echo "📦 Installing Git, Stow, Curl, and Compilers..."
+sudo dnf install -y git stow unzip curl fontconfig pkgconf-pkg-config make automake gcc gcc-c++
 sudo dnf groupinstall -y "Development Tools" 
 
 # 3. Install Packages from List
 if [ -f "pkglist.txt" ]; then
     echo "📦 Installing packages from pkglist.txt..."
-    # We use xargs to install efficiently
-    sudo dnf install -y $(cat pkglist.txt)
+    # Filter out comments (#) and empty lines to prevent errors
+    PACKAGES=$(grep -vE "^\s*#|^\s*$" pkglist.txt | tr '\n' ' ')
+    if [ -n "$PACKAGES" ]; then
+        sudo dnf install -y $PACKAGES
+    else
+        echo "   -> pkglist.txt is empty. Skipping."
+    fi
 else
     echo "⚠️  WARNING: pkglist.txt not found! Skipping package installation."
 fi
 
 # ---------------------------------------------------------
-# 4. MANUAL BUILDS & FONTS (The "Hidden 20%")
+# 4. MANUAL BUILDS & FONTS
 # ---------------------------------------------------------
 
 echo "🛠️  Starting Manual Builds..."
 
-# Create a temp directory for building to keep home clean
+# Create a temp directory for building
 BUILD_DIR=$(mktemp -d)
 cd "$BUILD_DIR"
 
 # --- A. Build nchat ---
 if ! command -v nchat &> /dev/null; then
-    echo "   -> Building nchat (C++)..."
-    # Install dependencies specific to nchat
+    echo "   -> Building nchat..."
+    set +e # Allow fail
     sudo dnf install -y ncurses-devel sqlite-devel libcurl-devel file-devel openssl-devel
-    
     git clone https://github.com/d99kris/nchat.git
     cd nchat
-    ./make.sh
-    sudo make install
+    ./make.sh && sudo make install
+    BUILD_STATUS=$?
     cd ..
+    set -e # Safety on
+    
+    if [ $BUILD_STATUS -ne 0 ]; then
+        echo "⚠️  WARNING: nchat build failed. Skipping."
+    fi
 else
     echo "   -> nchat is already installed."
 fi
 
 # --- B. Build kew ---
 if ! command -v kew &> /dev/null; then
-    echo "   -> Building kew (Music Player)..."
-    # Install dependencies specific to kew
+    echo "   -> Building kew..."
+    set +e
     sudo dnf install -y fftw-devel opusfile-devel chafa-devel taglib-devel libcurl-devel
-    
     git clone https://github.com/ravachol/kew.git
     cd kew
-    make
-    sudo make install
+    make && sudo make install
+    BUILD_STATUS=$?
     cd ..
+    set -e
+    
+    if [ $BUILD_STATUS -ne 0 ]; then
+        echo "⚠️  WARNING: kew build failed. Skipping."
+    fi
 else
     echo "   -> kew is already installed."
 fi
@@ -71,19 +91,15 @@ FONT_DIR="$HOME/.local/share/fonts"
 if [ ! -d "$FONT_DIR" ]; then
     echo "🔤 Installing Meslo Nerd Font..."
     mkdir -p "$FONT_DIR"
-    # Download directly to font dir
     cd "$FONT_DIR"
     curl -fLo "Meslo.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip
     unzip -o Meslo.zip
     rm Meslo.zip
-    # Refresh font cache
     fc-cache -fv
-    echo "   -> Fonts installed."
 else
     echo "   -> Fonts directory exists. Skipping."
 fi
 
-# Clean up build directory
 rm -rf "$BUILD_DIR"
 echo "✅ Manual builds complete."
 
@@ -91,28 +107,35 @@ echo "✅ Manual builds complete."
 # 5. DOTFILES & SECRETS
 # ---------------------------------------------------------
 
-# Return to dotfiles folder (we moved to temp earlier)
 cd ~/dotfiles
 
-# Setup Public Dotfiles
+# --- PREVENT STOW POLLUTION ---
+echo "install.sh" > .stow-local-ignore
+echo "pkglist.txt" >> .stow-local-ignore
+echo ".git" >> .stow-local-ignore
+echo ".gitignore" >> .stow-local-ignore
+echo "README.md" >> .stow-local-ignore
+
+# --- CLEAN DEFAULT CONFIGS ---
+echo "🧹 Cleaning up default config files to prevent conflicts..."
+rm -f ~/.zshrc ~/.bashrc ~/.bash_profile ~/.gitconfig
+
 echo "🔗 Stowing Public Dotfiles..."
 stow . 
 
 # Setup Private Secrets
 echo "==========================================="
 echo "🔐 SECRETS SETUP"
-echo "We need to clone your private 'secure_keys' repo."
-echo "You will be asked for your GitHub Username and PAT (Token)."
+echo "Enter GitHub Username and PAT when prompted."
 echo "==========================================="
 
 if [ ! -d "$HOME/secure_keys" ]; then
     git clone https://github.com/Kushagra1203/secure_keys.git ~/secure_keys
-    
     echo "🔗 Stowing Secrets..."
     cd ~/secure_keys
     stow .
 else
-    echo "✅ secure_keys folder already exists. Skipping clone."
+    echo "✅ secure_keys folder exists. Restowing..."
     cd ~/secure_keys
     stow -R .
 fi
@@ -121,11 +144,11 @@ fi
 # 6. SHELL & FINISH
 # ---------------------------------------------------------
 
-# Shell Setup
 CURRENT_SHELL=$(basename "$SHELL")
 if [ "$CURRENT_SHELL" != "zsh" ]; then
     echo "🐚 Changing default shell to Zsh..."
-    chsh -s $(which zsh)
+    # 'usermod' is the standard way to change shells on Fedora
+    sudo usermod --shell $(which zsh) $USER
 fi
 
 echo "==========================================="
