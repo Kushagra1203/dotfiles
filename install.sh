@@ -131,7 +131,7 @@ EOF
 stow -R */
 
 # 7. Secrets Setup (Interactive)
-log "🔐 Setting up Secrets..."
+log "Setting up Secrets..."
 echo -e "${GREEN}?? Do you want to clone your secrets (API keys) now?${NC}"
 echo "   (y) Yes - I have my GitHub Token ready to type."
 echo "   (n) No  - I will do this later in the GUI (Easier Copy-Paste)."
@@ -150,7 +150,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     fi
 
     # 8. Restore SSH Keys (Only if secrets were cloned)
-    log "🔑 Restoring SSH Keys..."
+    log "Restoring SSH Keys..."
     mkdir -p ~/.ssh
     if [ -d "$HOME/secure_keys/ssh_backup" ]; then
         cp -r ~/secure_keys/ssh_backup/* ~/.ssh/
@@ -164,7 +164,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         error "No SSH backup found in secure_keys."
     fi
 else
-    log "⚠️  Skipping Secrets. Remember to clone 'secure_keys' manually after reboot!"
+    log "Skipping Secrets. Remember to clone 'secure_keys' manually after reboot!"
 fi
 
 # 9. Final Polish
