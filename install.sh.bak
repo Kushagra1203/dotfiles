@@ -26,9 +26,14 @@ sudo dnf install -y git stow unzip curl fontconfig pkgconf-pkg-config make autom
 
 # 3. Install Packages from List
 if [ -f "pkglist.txt" ]; then
-	echo "📦 Installing packages from pkglist.txt..."
- 	# Filter out comments (#) and empty lines to prevent errors
-	grep -vE "^\s*#|^\s*$" pkglist.txt | xargs sudo dnf install -y --skip-unavailable
+    echo "📦 Installing packages from pkglist.txt..."
+    # Filter out comments (#) and empty lines to prevent errors
+    PACKAGES=$(grep -vE "^\s*#|^\s*$" pkglist.txt | tr '\n' ' ')
+    if [ -n "$PACKAGES" ]; then
+        sudo dnf install -y $PACKAGES --skip-unavailable $PACKAGES
+    else
+        echo "   -> pkglist.txt is empty. Skipping."
+    fi
 else
     echo "⚠️  WARNING: pkglist.txt not found! Skipping package installation."
 fi

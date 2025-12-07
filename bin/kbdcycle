@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# 1. Find the keyboard device (Asahi usually names it apple::kbd_backlight)
+# We grab the first device that has 'kbd_backlight' in the name
+DEVICE=$(brightnessctl --list | grep kbd_backlight | head -n1 | cut -d"'" -f2)
+
+if [ -z "$DEVICE" ]; then
+    notify-send "Keyboard Error" "No backlight device found."
+    exit 1
+fi
+
+# 2. Get current percentage
+CURRENT=$(brightnessctl -d "$DEVICE" g)
+MAX=$(brightnessctl -d "$DEVICE" m)
+PERCENT=$(( 100 * CURRENT / MAX ))
+
+# 3. Calculate Target (0 -> 50 -> 100 -> 0)
+# We use ranges to handle slight variations
+if [ "$PERCENT" -lt 10 ]; then
+    NEW=50
+elif [ "$PERCENT" -lt 60 ]; then
+    NEW=100
+else
+    NEW=0
+fi
+
+# 4. Set it
+brightnessctl -d "$DEVICE" s "${NEW}%"

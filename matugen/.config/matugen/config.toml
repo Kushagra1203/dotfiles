@@ -6,7 +6,7 @@ caching = true
 type = "material-you"
 
 # ─────────────────────────────────────────────
-# GTK3 + GTK4 (already existed)
+# GTK3 + GTK4 
 # ─────────────────────────────────────────────
 [templates.gtk3]
 input_path = "~/.config/matugen/templates/gtk/colors.template.css"
@@ -62,6 +62,9 @@ output_path = "~/.config/kew/themes/material.theme"
 input_path = '~/.config/matugen/templates/zathurarc/matugen-zathurarc.template'
 output_path = '~/.config/zathura/matugen-zathurarc'
 
+# ─────────────────────────────────────────────
+# Nvim
+# ─────────────────────────────────────────────
 [templates.nvim]
 input_path = "~/.config/matugen/templates/nvim/matugen.lua.template"
 output_path = "~/.config/nvim/colors/matugen.lua"
@@ -70,6 +73,20 @@ output_path = "~/.config/nvim/colors/matugen.lua"
 input_path = "~/.config/matugen/templates/nvim/lualine.lua.template"
 output_path = "~/.config/nvim/lua/plugins/lualine.lua"
 
+# ─────────────────────────────────────────────
+# rofi
+# ─────────────────────────────────────────────
 [templates.rofi]
 input_path = '~/.config/matugen/templates/rofi/colors.rasi.template'
 output_path = '~/.config/rofi/colors.rasi'
+
+# ─────────────────────────────────────────────
+# nchat
+# ─────────────────────────────────────────────
+[templates.nchat_color]
+input_path = "~/.config/matugen/templates/nchat/nchat-color.conf"
+output_path = "~/.config/nchat/color.conf"
+
+[templates.nchat_usercolor]
+input_path = "~/.config/matugen/templates/nchat/nchat-usercolor.conf"
+output_path = "~/.config/nchat/usercolor.conf"

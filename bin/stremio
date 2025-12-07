@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
 import requests
 import sys
 import subprocess
 import urllib.parse
 import shutil
-import re  # Added for finding size/seeds in text
+import re
 from InquirerPy import inquirer
+from typing import List, Dict, Any
 
 # --- CONFIGURATION ---
 PROVIDERS = [
@@ -14,7 +16,7 @@ PROVIDERS = [
     },
     {
         "name": "Comet",
-        "url": "https://comet.elfhosted.com/eyJtYXhSZXN1bHRzUGVyUmVzb2x1dGlvbiI6MCwibWF4U2l6ZSI6MCwiY2FjaGVkT25seSI6ZmFsc2UsInJlbW92ZVRyYXNoIjp0cnVlLCJyZXN1bHRGb3JtYXQiOlsiYWxsIl0sImRlYnJpZFNlcnZpY2UiOiJ0b3JyZW50IiwiZGVicmlkQXBpS2V5IjoiIiwiZGVicmlkU3RyZWFtUHJveHlQYXNzd29yZCI6IiIsImxhbmd1YWdlcyI6eyJleGNsdWRlIjpbXSwicHJlZmVycmVkIjpbXX0sInJlc29sdXRpb25zIjp7fSwib3B0aW9ucyI6eyJyZW1vdmVfcmFua3NfdW5kZXIiOi0xMDAwMDAwMDAwMCwiYWxsb3dfZW5nbGlzaF9pbl9sYW5ndWFnZXMiOmZhbHNlLCJyZW1vdmVfdW5rbm93bl9sYW5ndWFnZXMiOmZhbHNlfX0=/manifest.json"
+        "url": "https://comet.elfhosted.com/eyJtYXhSZXN1bHRzUGVyUmVzZXBpdmlc..."
     }
 ]
 
@@ -26,7 +28,7 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.5"
 }
 
-def format_size(size_bytes):
+def format_size(size_bytes: int) -> str:
     if not size_bytes: return ""
     try:
         size = float(size_bytes)
@@ -38,12 +40,12 @@ def format_size(size_bytes):
         return ""
     return ""
 
-def search_imdb(query):
+def search_imdb(query: str) -> List[Dict[str, Any]]:
     url = f"https://v3.sg.media-imdb.com/suggestion/x/{query}.json"
     try:
         data = requests.get(url, headers=HEADERS).json()
-    except:
-        sys.exit("IMDb Search Failed.")
+    except requests.exceptions.RequestException as e:
+        sys.exit(f"IMDb Search Failed: {e}")
 
     choices = []
     for item in data.get('d', []):
@@ -54,7 +56,7 @@ def search_imdb(query):
             })
     return choices
 
-def get_series_details(imdb_id):
+def get_series_details(imdb_id: str) -> List[Dict[str, Any]]:
     url = f"{CINEMETA_URL}/series/{imdb_id}.json"
     print("Fetching Season/Episode list from Cinemeta...")
     try:
@@ -64,7 +66,7 @@ def get_series_details(imdb_id):
     except Exception as e:
         sys.exit(f"Failed to load series details: {e}")
 
-def get_magnet_name(magnet_link):
+def get_magnet_name(magnet_link: str) -> str:
     try:
         parsed = urllib.parse.urlparse(magnet_link)
         params = urllib.parse.parse_qs(parsed.query)
@@ -74,7 +76,7 @@ def get_magnet_name(magnet_link):
         pass
     return None
 
-def get_streams(stremio_id, type_):
+def get_streams(stremio_id: str, type_: str) -> List[Dict[str, Any]]:
     all_streams = []
     for prov in PROVIDERS:
         sys.stdout.write(f"Fetching from {prov['name']}... ")
@@ -92,126 +94,135 @@ def get_streams(stremio_id, type_):
                     if 'name' not in s: s['name'] = prov['name']
                 all_streams.extend(streams)
             else:
-                print(f"❌ Failed (Status: {response.status_code})")
+                # DETAILED ERROR REPORTING
+                print(f"❌ Failed (Status: {response.status_code}, URL: {api_url})")
+        except requests.exceptions.RequestException as e:
+            # DETAILED EXCEPTION REPORTING
+            print(f"❌ Network Error: {e}")
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f"❌ Unexpected Error: {e}")
     return all_streams
 
 # --- MAIN ---
-query = input("Search: ")
-results = search_imdb(query)
-if not results: sys.exit("No results.")
+try: # WRAPPER FOR CTRL+C FIX
+    query = input("Search: ")
+    results = search_imdb(query)
+    if not results: sys.exit("No results.")
 
-imdb_id, type_ = inquirer.select("Select content:", results).execute()
-target_id = imdb_id
-stremio_type = "movie" if type_ == "feature" else "series"
+    imdb_id, type_ = inquirer.select("Select content:", results).execute()
+    target_id = imdb_id
+    stremio_type = "movie" if type_ == "feature" else "series"
 
-if stremio_type == "series":
-    videos = get_series_details(imdb_id)
-    seasons = {}
-    for vid in videos:
-        s = vid.get('season')
-        if s == 0: continue 
-        if s not in seasons: seasons[s] = []
-        seasons[s].append(vid)
-    
-    if not seasons: sys.exit("No seasons found.")
-    
-    season_choices = sorted(seasons.keys())
-    selected_season = inquirer.select(
-        message="Select Season:",
-        choices=[{"name": f"Season {s}", "value": s} for s in season_choices]
-    ).execute()
-    
-    episodes = seasons[selected_season]
-    episodes.sort(key=lambda x: x.get('episode', 0))
-    episode_choices = [{"name": f"Ep {ep['episode']}: {ep.get('name', 'Episode ' + str(ep['episode']))}", "value": ep['id']} for ep in episodes]
-    target_id = inquirer.select(message="Select Episode:", choices=episode_choices).execute()
-
-streams = get_streams(target_id, stremio_type)
-if not streams: sys.exit("\n❌ No streams found.")
-
-# --- ADVANCED PARSING (Regex + Smart Truncate) ---
-choices = []
-term_width = shutil.get_terminal_size((100, 20)).columns 
-
-for s in streams:
-    # 1. Clean Provider Name (Fixes the newlines)
-    raw_provider = s.get('name', 'Stream')
-    provider = raw_provider.replace('\n', ' ')
-
-    # 2. Link
-    link = s.get('url') or s.get('infoHash')
-    if link and not link.startswith("magnet") and not link.startswith("http"):
-        link = f"magnet:?xt=urn:btih:{link}"
-    if not link or not link.startswith("magnet"):
-        continue
-
-    # 3. Filename Parsing
-    full_title = s.get('title', '')
-    bh = s.get('behaviorHints', {})
-    
-    if '\n' in full_title:
-        parts = full_title.split('\n')
-        filename = parts[0] # First line is usually the filename
-    else:
-        filename = full_title
-        if not filename: filename = bh.get('filename')
-        if not filename: filename = get_magnet_name(link)
-        if not filename: filename = "Unknown Release"
-
-    # 4. Info Parsing (Size + Seeds)
-    info_parts = []
-
-    # --- SIZE EXTRACTION ---
-    # Priority: 1. behaviorHints -> 2. Regex in Title
-    size_found = False
-    if bh.get('videoSize'):
-        info_parts.append(f"💾 {format_size(bh.get('videoSize'))}")
-        size_found = True
-    
-    if not size_found:
-        # Regex search for strings like "1.2 GB" or "500MB" in the full title
-        size_match = re.search(r'(\d+(?:\.\d+)?\s?[KMGT]B)', full_title, re.IGNORECASE)
-        if size_match:
-            info_parts.append(f"💾 {size_match.group(1).upper()}")
-
-    # --- SEED EXTRACTION ---
-    # Priority: 1. API Key -> 2. Regex in Title
-    seed_found = False
-    if s.get('seeds') is not None:
-        info_parts.append(f"👤 {s['seeds']}")
-        seed_found = True
+    if stremio_type == "series":
+        videos = get_series_details(imdb_id)
+        seasons = {}
+        for vid in videos:
+            s = vid.get('season')
+            if s == 0: continue
+            if s not in seasons: seasons[s] = []
+            seasons[s].append(vid)
         
-    if not seed_found:
-        # Torrentio often puts "👤 123" or just "123" if parsing fails
-        seed_match = re.search(r'👤\s?(\d+)', full_title)
-        if seed_match:
-            info_parts.append(f"👤 {seed_match.group(1)}")
+        if not seasons: sys.exit("No seasons found.")
+        
+        season_choices = sorted(seasons.keys())
+        selected_season = inquirer.select(
+            message="Select Season:",
+            choices=[{"name": f"Season {s}", "value": s} for s in season_choices]
+        ).execute()
+        
+        episodes = seasons[selected_season]
+        episodes.sort(key=lambda x: x.get('episode', 0))
+        episode_choices = [{"name": f"Ep {ep['episode']}: {ep.get('name', 'Episode ' + str(ep['episode']))}", "value": ep['id']} for ep in episodes]
+        target_id = inquirer.select(message="Select Episode:", choices=episode_choices).execute()
 
-    extra_info = " | ".join(info_parts)
-    if extra_info: extra_info = f"| {extra_info}"
+    streams = get_streams(target_id, stremio_type)
+    if not streams: sys.exit("\n❌ No streams found.")
 
-    # 5. Smart Truncation
-    reserved = len(provider) + len(extra_info) + 10
-    available = term_width - reserved
-    if available < 15: available = 15
+    # --- ADVANCED PARSING (Regex + Smart Truncate) ---
+    choices = []
+    term_width = shutil.get_terminal_size((100, 20)).columns
 
-    clean_name = filename.replace('\n', ' ')
-    if len(clean_name) > available:
-        cut_start = int(available * 0.7)
-        cut_end = int(available * 0.25)
-        display_name = f"{clean_name[:cut_start]}.....{clean_name[-cut_end:]}"
-    else:
-        display_name = clean_name
+    for s in streams:
+        # 1. Clean Provider Name (Fixes the newlines)
+        raw_provider = s.get('name', 'Stream')
+        provider = raw_provider.replace('\n', ' ')
 
-    display = f"[{provider}] {display_name} {extra_info}"
-    choices.append({"name": display, "value": link})
+        # 2. Link
+        link = s.get('url') or s.get('infoHash')
+        if link and not link.startswith("magnet") and not link.startswith("http"):
+            link = f"magnet:?xt=urn:btih:{link}"
+        if not link or not link.startswith("magnet"):
+            continue
 
-if not choices:
-    sys.exit("\n❌ Streams found, but none were P2P Magnets.")
+        # 3. Filename Parsing
+        full_title = s.get('title', '')
+        bh = s.get('behaviorHints', {})
+        
+        if '\n' in full_title:
+            parts = full_title.split('\n')
+            filename = parts[0] # First line is usually the filename
+        else:
+            filename = full_title
+            if not filename: filename = bh.get('filename')
+            if not filename: filename = get_magnet_name(link)
+            if not filename: filename = "Unknown Release"
 
-magnet = inquirer.select("Select Stream:", choices).execute()
+        # 4. Info Parsing (Size + Seeds)
+        info_parts = []
 
-print(f"Streaming via WebTorrent...")
-subprocess.run(["webtorrent", magnet, "--mpv"])
+        # --- SIZE EXTRACTION ---
+        # Priority: 1. behaviorHints -> 2. Regex in Title
+        size_found = False
+        if bh.get('videoSize'):
+            info_parts.append(f"💾 {format_size(bh.get('videoSize'))}")
+            size_found = True
+        
+        if not size_found:
+            # Regex search for strings like "1.2 GB" or "500MB" in the full title
+            size_match = re.search(r'(\d+(?:\.\d+)?\s?[KMGT]B)', full_title, re.IGNORECASE)
+            if size_match:
+                info_parts.append(f"💾 {size_match.group(1).upper()}")
+
+        # --- SEED EXTRACTION ---
+        # Priority: 1. API Key -> 2. Regex in Title
+        seed_found = False
+        if s.get('seeds') is not None:
+            info_parts.append(f"👤 {s['seeds']}")
+            seed_found = True
+            
+        if not seed_found:
+            # Torrentio often puts "👤 123" or just "123" if parsing fails
+            seed_match = re.search(r'👤\s?(\d+)', full_title)
+            if seed_match:
+                info_parts.append(f"👤 {seed_match.group(1)}")
+
+        extra_info = " | ".join(info_parts)
+        if extra_info: extra_info = f"| {extra_info}"
+
+        # 5. Smart Truncation
+        reserved = len(provider) + len(extra_info) + 10
+        available = term_width - reserved
+        if available < 15: available = 15
+
+        clean_name = filename.replace('\n', ' ')
+        if len(clean_name) > available:
+            cut_start = int(available * 0.7)
+            cut_end = int(available * 0.25)
+            display_name = f"{clean_name[:cut_start]}.....{clean_name[-cut_end:]}"
+        else:
+            display_name = clean_name
+
+        display = f"[{provider}] {display_name} {extra_info}"
+        choices.append({"name": display, "value": link})
+
+    if not choices:
+        sys.exit("\n❌ Streams found, but none were P2P Magnets.")
+
+    magnet = inquirer.select("Select Stream:", choices).execute()
+
+    print(f"Streaming via WebTorrent...")
+    subprocess.run(["webtorrent", magnet, "--mpv"])
+
+except KeyboardInterrupt: # ADDED FOR CTRL+C
+    print("\nOperation cancelled by user.")
+    sys.exit(1)

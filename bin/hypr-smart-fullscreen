@@ -1,0 +1,47 @@
+#!/bin/bash
+STATE_FILE="/tmp/hypr_smart_fullscreen_state"
+
+# --- RESTORE MODE (Toggle OFF) ---
+if [ -f "$STATE_FILE" ]; then
+    read -r WIN_ADDR ORIG_WS < "$STATE_FILE"
+    ACTIVE_ADDR=$(hyprctl activewindow -j | jq -r '.address')
+
+    # If the active window is the one we moved earlier, bring it back
+    if [[ "${ACTIVE_ADDR,,}" == "${WIN_ADDR,,}" ]]; then
+        hyprctl dispatch fullscreen 0
+        hyprctl dispatch movetoworkspacesilent "$ORIG_WS"
+        hyprctl dispatch workspace "$ORIG_WS"
+        rm "$STATE_FILE"
+        exit 0
+    fi
+fi
+
+# --- ACTIVATE MODE (Toggle ON) ---
+ACTIVE_ADDR=$(hyprctl activewindow -j | jq -r '.address')
+ACTIVE_WS=$(hyprctl activewindow -j | jq -r '.workspace.id')
+
+# Find the first empty workspace (scanning 1 to 20)
+# FIX: We use 'tr' to flatten the vertical list into a horizontal one (1 2 3...)
+OCCUPIED=$(hyprctl workspaces -j | jq -r '.[].id' | tr '\n' ' ')
+
+TARGET_WS=""
+for i in {1..20}; do
+    # Now we can safely check if the number exists in the space-separated list
+    if [[ ! " $OCCUPIED " =~ " $i " ]]; then
+        TARGET_WS=$i
+        break
+    fi
+done
+
+if [ -z "$TARGET_WS" ]; then
+    notify-send "Error" "No empty workspace found!"
+    exit 1
+fi
+
+# Save state so we can restore later
+echo "$ACTIVE_ADDR $ACTIVE_WS" > "$STATE_FILE"
+
+# Move, Switch, and Fullscreen
+hyprctl dispatch movetoworkspacesilent "$TARGET_WS"
+hyprctl dispatch workspace "$TARGET_WS"
+hyprctl dispatch fullscreen 0
