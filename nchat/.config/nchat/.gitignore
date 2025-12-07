@@ -1,0 +1,8 @@
+history/
+temp/
+logs/
+*.log
+*.log.*
+debug.info
+emojis/
+profiles/
