@@ -1,20 +1,33 @@
-#set default-bg                     "#0f1512"
-set default-fg                     "#dee4e0"
-set statusbar-bg                   "#0f1512"
-set statusbar-fg                   "#dee4e0"
-set inputbar-bg                    "#0f1512"
-set inputbar-fg                    "#dee4e0"
-set notification-bg                "#0f1512"
-set notification-fg                "#dee4e0"
-set notification-error-bg          "#0f1512"
-set notification-error-fg          "#dee4e0"
-set notification-warning-bg        "#0f1512"
-set notification-warning-fg        "#dee4e0"
-set highlight-color                "#87d6bd"
-set highlight-active-color         "#a9cbe2"
-set completion-bg                  "#87d6bd"
-set completion-fg                  "#a9cbe2"
-set completion-highlight-bg        "#87d6bd"
-set completion-highlight-fg        "#a9cbe2"
-#set recolor-lightcolor             "#dee4e0"
-#set recolor-darkcolor              "#0f1512"
+" --- Background and Transparency ---
+set default-bg            "rgba(0,0,0,0.7)"
+set default-fg            "#4C73A0"
+
+" --- UI Elements ---
+set statusbar-bg            "#030308"
+set statusbar-fg            "#4C73A0"
+
+set inputbar-bg             "#030308"
+set inputbar-fg             "#4C73A0"
+
+set notification-bg         "#030308"
+set notification-fg         "#4C73A0"
+
+set notification-error-bg   "#B2CFFF"
+set notification-error-fg   "#444F61"
+
+set notification-warning-bg "#4B719C"
+set notification-warning-fg "#444F61"
+
+" --- Highlights and Completion ---
+set highlight-color         "#3F79BC"
+set highlight-active-color  "#4C73A0"
+
+set completion-bg            "#030308"
+set completion-fg            "#4C73A0"
+
+set completion-highlight-bg "#4C73A0"
+set completion-highlight-fg "#030308"
+
+" --- Recolor (The actual PDF text) ---
+set recolor-lightcolor      "rgba(0,0,0,0)"
+set recolor-darkcolor        "#4C73A0"

@@ -1,0 +1,123 @@
+/* ---- 💫 Clean Glass Vertical Theme (Vim Keys + Infinite Cycle) 💫 ---- */
+
+* {
+    font:                        "JetBrains Mono Nerd Font 12";
+    foreground:                  #FFFFFF;
+    background-window:           rgba(0, 0, 0, 0.01);
+    background-card:             transparent;
+    selected-card:               rgba(0, 0, 0, 0.1);
+    text-color:                  #FFFFFF;
+    border-color:                rgba(255, 255, 255, 0.5);
+}
+
+configuration {
+    modi:                        "drun";
+    show-icons:                  true;
+    drun-display-format:         "{name}";
+    hover-select:                true;
+    me-select-entry:             "MouseSecondary";
+    me-accept-entry:             "MousePrimary";
+    dpi:                         1;
+    
+    /* --- FIXING THE ERRORS --- */
+    /* 1. Unbind Left/Right from text editing so they don't crash */
+    kb-move-char-back:           "Control+b";
+    kb-move-char-forward:        "Control+f";
+    
+    /* 2. Map h/l (and Left/Right) to navigation */
+    kb-row-left:                 "h,Left";
+    kb-row-right:                "l,Right";
+    kb-row-up:                   "k,Up";
+    kb-row-down:                 "j,Down";
+}
+
+window {
+    enabled:                     true;
+    fullscreen:                  false;
+    transparency:                "real";
+    cursor:                      "default";
+    spacing:                     0px;
+    border-radius:               20px;
+    location:                    center;
+    anchor:                      center;
+    width:                       80%;
+    height:                      50%;
+    background-color:            transparent;
+    border:                      0px;
+}
+
+mainbox {
+    enabled:                     true;
+    orientation:                 vertical;
+    children:                    [ "dummy", "listview", "dummy" ];
+    background-color:            transparent;
+    padding:                     0px; 
+}
+
+dummy {
+    expand:                      true;
+    background-color:            transparent;
+}
+
+listview {
+    enabled:                     true;
+    columns:                     5;
+    lines:                       1; 
+    
+    /* -- INFINITE ROTATION -- */
+    /* This makes Left on First Item -> Last Item */
+    cycle:                       true; 
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    reverse:                     false;
+    
+    expand:                      false;
+    fixed-height:                true;
+    fixed-columns:               true;
+    
+    background-color:            transparent;
+    spacing:                     30px; 
+    margin:                      0px;
+    border:                      0px;
+}
+
+element {
+    enabled:                     true;
+    orientation:                 vertical;
+    expand:                      false;
+    spacing:                     0px;
+    padding:                     0px;
+    border-radius:               20px;
+    cursor:                      "pointer";
+    background-color:            @background-card;
+}
+
+element normal.normal { background-color: transparent; text-color: inherit; }
+element normal.urgent { background-color: transparent; text-color: @foreground; }
+element normal.active { background-color: transparent; text-color: @foreground; }
+
+element selected.normal {
+    background-color:            @selected-card;
+    text-color:                  #FFFFFF;
+    border:                      1px;
+    border-color:                @border-color;
+}
+element alternate.normal { background-color: transparent; text-color: inherit; }
+
+element-icon {
+    size:                        550px; 
+    cursor:                      inherit;
+    border-radius:               20px;
+    background-color:            transparent;
+    horizontal-align:            0.5;
+}
+
+element-text {
+    enabled:                     false;
+    vertical-align:              0.5;
+    horizontal-align:            0.5;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+}

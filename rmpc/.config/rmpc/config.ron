@@ -1,7 +1,200 @@
+#![enable(implicit_some)]
+#![enable(unwrap_newtypes)]
+#![enable(unwrap_variant_newtypes)]
 (
-    mpd_address: "127.0.0.1:6600",
-    mpd_timeout: 5,
-    show_cover: true,
-    cover_method: "kitty",
-    theme: "default",
+    address: "127.0.0.1:6600",
+    password: None,
+    enable_config_hot_reload: true,
+    theme: Some("minimal"), // Uses the container theme
+    lyrics_dir: Some("~/music/lyrics"),
+    album_art: (
+        method: Kitty,
+        max_size_px: (width: 0,height: 0),
+        disabled_protocols: ["http://", "https://"],
+        vertical_align: Center,
+        horizontal_align: Center,
+        display_metadata: false,
+    ),
+    keybinds: (
+        global: {
+            ":":       CommandMode,
+            ",":       VolumeDown,
+            "s":       Stop,
+            ".":       VolumeUp,
+            "<Tab>":   NextTab,
+            "<S-Tab>": PreviousTab,
+            "1":       SwitchToTab("Queue"),
+            "2":       SwitchToTab("Minimal"),
+            "3":       SwitchToTab("Directories"),
+            "4":       SwitchToTab("Artists"),
+            "5":       SwitchToTab("Albums"),
+            "6":       SwitchToTab("Search"),
+            "q":       Quit,
+            ">":       NextTrack,
+            "p":       TogglePause,
+            "<":       PreviousTrack,
+            "f":       SeekForward,
+            "z":       ToggleRepeat,
+            "x":       ToggleRandom,
+            "c":       ToggleConsume,
+            "v":       ToggleSingle,
+            "b":       SeekBack,
+            "?":       ShowHelp,
+            "u":       Update,
+            "U":       Rescan,
+            "I":       ShowCurrentSongInfo,
+            "O":       ShowOutputs,
+            "P":       ShowDecoders,
+            "R":       AddRandom,
+            "<F1>":    SwitchToTab("Queue"),
+            "<F2>":    SwitchToTab("Minimal"),
+        },
+        navigation: {
+            "k": Up, "j": Down, "h": Left, "l": Right,
+            "<Up>": Up, "<Down>": Down, "<Left>": Left, "<Right>": Right,
+            "<C-k>": PaneUp, "<C-j>": PaneDown, "<C-h>": PaneLeft, "<C-l>": PaneRight,
+            "<C-u>": UpHalf, "N": PreviousResult, "a": Add, "A": AddAll,
+            "r": Rename, "n": NextResult, "g": Top, "<Space>": Select,
+            "<C-Space>": InvertSelection, "G": Bottom, "<CR>": Confirm,
+            "i": FocusInput, "J": MoveDown, "<C-d>": DownHalf,
+            "/": EnterSearch, "<C-c>": Close, "<Esc>": Close,
+            "K": MoveUp, "D": Delete, "B": ShowInfo,
+        },
+        queue: {
+            "D": DeleteAll, "<CR>": Play, "<C-s>": Save,
+            "a": AddToPlaylist, "d": Delete, "C": JumpToCurrent, "X": Shuffle,
+        },
+    ),
+    cava: (
+        framerate: 60,
+        autosens: true,
+        sensitivity: 100,
+        input: (
+            method: Fifo,
+            source: "/tmp/mpd.fifo", // Must match mpd.conf path
+            sample_rate: 44100,
+            channels: 2,
+            sample_bits: 16,
+        ),
+        smoothing: (
+            noise_reduction: 77,
+            monstercat: false,
+            waves: false,
+        ),
+    ),
+    tabs: [
+        // F1: Standard Queue View with Art/Lyrics stack
+        (
+            name: "Queue",
+            pane: Split(
+                direction: Vertical,
+                panes: [
+                    (size: "3", pane: Pane(Tabs)),
+                    (size: "2", pane: Pane(Header)),
+                    (size: "100%", pane: Split(
+                        direction: Horizontal,
+                        panes: [
+                            (size: "65%", borders: "ALL", pane: Pane(Queue)),
+                            (size: "35%", pane: Split(
+                                direction: Vertical,
+                                panes: [
+                                    (size: "75%", borders: "NONE", pane: Pane(AlbumArt)), 
+                                    (size: "25%", pane: Pane(Lyrics)),
+                                ],
+                            )),
+                        ],
+                    )),
+                    (size: "1", pane: Pane(ProgressBar)),
+                ],
+            ),
+        ),        
+        // F2: Minimal View with Stacked Vertical Metadata
+        (
+            name: "Minimal",
+            pane: Split(
+                direction: Vertical,
+                panes: [
+                    (size: "0%", pane: Pane(Header)),
+                    (size: "0%", pane: Pane(Tabs)),
+                    (size: "2%", pane: Pane(Property(content: [(kind: Text(""))]))),
+                    // 1. Large Centered Album Art
+                    (size: "70%", pane: Split(
+                        direction: Horizontal,
+                        panes: [
+                            (size: "0%", pane: Pane(Property(content: [(kind: Text(""))]))), 
+                            (size: "100%", pane: Pane(AlbumArt)),
+                            (size: "0%", pane: Pane(Property(content: [(kind: Text(""))]))),
+                        ],
+                    )),
+                    // 2. Song Title
+                    (size: "1", pane: Pane(Property(
+                        align: Center,
+                        content: [(kind: Property(Song(Title)), style: (fg: "magenta", modifiers: "Bold"))]
+                    ))),
+                    // 3. Artist
+                    (size: "1", pane: Pane(Property(
+                        align: Center,
+                        content: [(kind: Property(Song(Artist)), style: (fg: "blue"))]
+                    ))),
+                    // 4. Album Name
+                    (size: "1", pane: Pane(Property(
+                        align: Center,
+                        content: [(kind: Property(Song(Album)), style: (fg: "white"))]
+                    ))),
+                    // 5. Year (FIXED: style moved inside the parentheses)
+                    (size: "1", pane: Pane(Property(
+                        align: Center,
+                        content: [(kind: Property(Song(Other("date"))), style: (fg: "white"))]
+                    ))),
+                    // 6. Time and Volume (FIXED: added kind: Property wrapper for Volume)
+                    (size: "1", pane: Pane(Property(
+                        align: Center,
+                        content: [
+                            (kind: Property(Status(Elapsed))), (kind: Text(" / ")), (kind: Property(Status(Duration))),
+                            (kind: Text("  |  Vol: ")), (kind: Property(Status(Volume)))
+                        ]
+                    ))),
+                    // 7. Cava Visualizer at the bottom
+                    (size: "25%", pane: Pane(Cava)), 
+                    (size: "1", pane: Pane(ProgressBar)),
+                ],
+            ),
+        ),       
+        (
+            name: "Directories",
+            pane: Split(direction: Vertical, panes: [
+                (size: "3", pane: Pane(Tabs)),
+                (size: "2", pane: Pane(Header)),
+                (size: "100%", pane: Pane(Directories)),
+                (size: "1", pane: Pane(ProgressBar)),
+            ]),
+        ),
+        (
+            name: "Artists",
+            pane: Split(direction: Vertical, panes: [
+                (size: "3", pane: Pane(Tabs)),
+                (size: "2", pane: Pane(Header)),
+                (size: "100%", pane: Pane(Artists)),
+                (size: "1", pane: Pane(ProgressBar)),
+            ]),
+        ),
+        (
+            name: "Albums",
+            pane: Split(direction: Vertical, panes: [
+                (size: "3", pane: Pane(Tabs)),
+                (size: "2", pane: Pane(Header)),
+                (size: "100%", pane: Pane(Albums)),
+                (size: "1", pane: Pane(ProgressBar)),
+            ]),
+        ),
+        (
+            name: "Search",
+            pane: Split(direction: Vertical, panes: [
+                (size: "3", pane: Pane(Tabs)),
+                (size: "2", pane: Pane(Header)),
+                (size: "100%", pane: Pane(Search)),
+                (size: "1", pane: Pane(ProgressBar)),
+            ]),
+        ),
+    ],
 )

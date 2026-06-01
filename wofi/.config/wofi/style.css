@@ -3,12 +3,13 @@ window {
     background: transparent;
     border: none;
     box-shadow: none;
-    color: #dee4e0;
+    color: #F2D8FF;
 }
 
 /* Real background applied to the INNER widget */
 #outer-box {
-    background-color: #0f151233;
+    /* Use the | rgb filter for comma-separated values */
+    background-color: rgba(7,5,11, 0.2); 
     margin: 20px;
     padding: 20px;
     border-radius: 16px;
@@ -16,15 +17,16 @@ window {
 
 /* Input box */
 #input {
-    background-color: #3f494544;
-    color: #bfc9c4;
+    background-color: rgba(155,132,185, 0.27); 
+    color: #F2D8FF;
     border-radius: 12px;
     padding: 6px;
 }
 
-/* Selected entry */
+/* Selected entry - Overridden to Blue to avoid "Bullshit Red" */
 #entry:selected {
-    background-color: #87d6bd55;
-    color: #00382c;
+    /* We point this to color4 (Blue) instead of color1 (Red) */
+    background-color: rgba(93,104,156, 0.33); 
+    color: #050307;
     border-radius: 12px;
 }

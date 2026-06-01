@@ -1,16 +1,25 @@
 return {
-  "rmagatti/auto-session",
-  config = function()
-    local auto_session = require("auto-session")
+	"rmagatti/auto-session",
+	config = function()
+		local auto_session = require("auto-session")
 
-    auto_session.setup({
-      auto_restore_enabled = false,
-      auto_session_suppress_dirs = { "~/", "~/Dev/", "~/Downloads", "~/Documents", "~/Desktop/" },
-    })
+		-- FIX 1: Set the recommended session options globally
+		-- This ensures highlighting and local settings work after restore
+		vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
-    local keymap = vim.keymap
+		auto_session.setup({
+			-- FIX 2: Use the new 2025 configuration names
+			auto_restore = false,
+			suppressed_dirs = { "~/", "~/Dev/", "~/Downloads", "~/Documents", "~/Desktop/" },
 
-    keymap.set("n", "<leader>wr", "<cmd>SessionRestore<CR>", { desc = "Restore session for cwd" }) -- restore last workspace session for current directory
-    keymap.set("n", "<leader>ws", "<cmd>SessionSave<CR>", { desc = "Save session for auto session root dir" }) -- save workspace session for current working directory
-  end,
+			-- Keep legacy_cmds off to avoid the "nag" warning we fixed earlier
+			legacy_cmds = false,
+			log_level = "error",
+		})
+
+		local keymap = vim.keymap
+		-- Modern 2025 commands
+		keymap.set("n", "<leader>wr", "<cmd>AutoSession restore<CR>", { desc = "Restore session for cwd" })
+		keymap.set("n", "<leader>ws", "<cmd>AutoSession save<CR>", { desc = "Save session for current directory" })
+	end,
 }

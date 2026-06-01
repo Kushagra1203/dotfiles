@@ -1,7 +1,5 @@
 {
-  "bar.customModules.storage.paths": [
-    "/"
-  ],
+  "bar.customModules.storage.paths": ["/"],
   "theme.bar.menus.monochrome": false,
   "theme.bar.transparent": true,
   "theme.bar.buttons.monochrome": false,
@@ -12,7 +10,7 @@
   "menus.transition": "crossfade",
   "theme.bar.menus.enableShadow": false,
   "scalingPriority": "both",
-  "menus.clock.weather.location": "Los Angeles",
+  "menus.clock.weather.location": "Mumbai",
   "menus.dashboard.shortcuts.left.shortcut4.command": "rofi -show drun",
   "theme.bar.opacity": 0,
   "theme.bar.buttons.opacity": 85,
@@ -21,8 +19,8 @@
   "wallpaper.enable": false,
   "theme.bar.menus.opacity": 85,
   "theme.matugen": true,
-  "wallpaper.image": "/home/kushagra/Wallpaper/07.jpeg",
-  "theme.matugen_settings.scheme_type": "tonal-spot",
+  "wallpaper.image": "/home/kushagra/dotfiles/assets/Wallpaper/002.jpg",
+  "theme.matugen_settings.scheme_type": "fruit-salad",
   "theme.matugen_settings.variation": "standard_1",
   "theme.matugen_settings.contrast": 0,
   "menus.dashboard.powermenu.avatar.image": "/home/kushagra/Downloads/Profile.png",
@@ -42,14 +40,8 @@
   "theme.bar.menus.menu.dashboard.profile.radius": "4em",
   "bar.layouts": {
     "0": {
-      "left": [
-        "dashboard",
-        "media",
-        "windowtitle"
-      ],
-      "middle": [
-        "workspaces"
-      ],
+      "left": ["dashboard", "media", "windowtitle"],
+      "middle": ["workspaces"],
       "right": [
         "volume",
         "network",
@@ -60,34 +52,14 @@
       ]
     },
     "1": {
-      "left": [
-        "dashboard",
-        "workspaces",
-        "windowtitle"
-      ],
-      "middle": [
-        "media"
-      ],
-      "right": [
-        "volume",
-        "clock",
-        "notifications"
-      ]
+      "left": ["dashboard", "workspaces", "windowtitle"],
+      "middle": ["media"],
+      "right": ["volume", "clock", "notifications"]
     },
     "2": {
-      "left": [
-        "dashboard",
-        "workspaces",
-        "windowtitle"
-      ],
-      "middle": [
-        "media"
-      ],
-      "right": [
-        "volume",
-        "clock",
-        "notifications"
-      ]
+      "left": ["dashboard", "workspaces", "windowtitle"],
+      "middle": ["media"],
+      "right": ["volume", "clock", "notifications"]
     }
   },
   "theme.bar.location": "top",
@@ -99,5 +71,9 @@
   "bar.launcher.autoDetectIcon": false,
   "theme.bar.buttons.dashboard.enableBorder": false,
   "theme.matugen_settings.mode": "dark",
-  "theme.bar.border.location": "none"
+  "theme.bar.border.location": "none",
+  "theme.bar.menus.menu.media.card.tint": 85,
+  "bar.customModules.updates.pollingInterval": 1440000,
+  "menus.clock.weather.unit": "metric",
+  "menus.clock.weather.key": "{{ (env 'WEATHER_API_KEY') }}"
 }

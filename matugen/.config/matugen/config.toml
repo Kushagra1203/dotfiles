@@ -23,7 +23,7 @@ output_path = "~/.config/gtk-4.0/colors.css"
 [templates.kitty]
 input_path = "~/.config/matugen/templates/kitty/kitty.conf.template"
 output_path = "~/.config/kitty/kitty-theme.conf"
-
+post_hook = 'pkill -SIGUSR1 kitty'
 
 # ─────────────────────────────────────────────
 # Wofi launcher
@@ -40,6 +40,16 @@ output_path = "~/.config/wofi/style.css"
 input_path = "~/.config/matugen/templates/hypr/colors.conf.template"
 output_path = "~/.config/hypr/colors.conf"
 
+[templates.cursor]
+input_path = '~/.config/matugen/templates/hypr/render.json'
+output_path = '~/Downloads/bibata_cursor/config/render.json'
+post_hook = '''
+cd ~/Downloads/bibata_cursor && \
+rm -rf ./out && \
+./src/cursor_utils.py --hypr --theme Bibata-Modern-Classic --out-dir ./out && \
+cp -r ./out/Bibata-Modern-Classic ~/.local/share/icons/ && \
+hyprctl setcursor Bibata-Modern-Classic 24
+'''
 
 # ─────────────────────────────────────────────
 # Qt6 / KDE
@@ -65,13 +75,14 @@ output_path = '~/.config/zathura/matugen-zathurarc'
 # ─────────────────────────────────────────────
 # Nvim
 # ─────────────────────────────────────────────
-[templates.nvim]
-input_path = "~/.config/matugen/templates/nvim/matugen.lua.template"
-output_path = "~/.config/nvim/colors/matugen.lua"
+#[templates.nvim]
+#input_path = "~/.config/matugen/templates/nvim/matugen.lua.template"
+#output_path = "~/.config/nvim/colors/matugen.lua"
 
 [templates.lualine]
 input_path = "~/.config/matugen/templates/nvim/lualine.lua.template"
 output_path = "~/.config/nvim/lua/plugins/lualine.lua"
+post_command = "pgrep nvim && pkill -USR1 nvim 2>/dev/null || true"
 
 # ─────────────────────────────────────────────
 # rofi
@@ -90,3 +101,85 @@ output_path = "~/.config/nchat/color.conf"
 [templates.nchat_usercolor]
 input_path = "~/.config/matugen/templates/nchat/nchat-usercolor.conf"
 output_path = "~/.config/nchat/usercolor.conf"
+
+# ─────────────────────────────────────────────
+# rmpc
+# ─────────────────────────────────────────────
+[templates.rmpc]
+input_path = '~/.config/matugen/templates/rmpc/minimal.ron.template'
+output_path = '~/.config/rmpc/themes/minimal.ron'
+
+# ─────────────────────────────────────────────
+# tmux
+# ─────────────────────────────────────────────
+[templates.tmux]
+input_path = '~/.config/matugen/templates/tmux/tmux.conf.template'
+output_path = '~/.config/tmux/tmux.conf'
+post_command = "tmux info &>/dev/null && tmux source-file ~/.config/tmux/tmux.conf || true"
+
+# ─────────────────────────────────────────────
+# btop
+# ─────────────────────────────────────────────
+[templates.btop]
+input_path = '~/.config/matugen/templates/btop/matugen.theme.template'
+output_path = '~/.config/btop/themes/matugen.theme'
+
+# ─────────────────────────────────────────────
+# end-4
+# ─────────────────────────────────────────────
+[templates.quickshell]
+input_path = "~/.config/matugen/templates/end-4/quickshell.json.template"
+output_path = "~/.local/state/quickshell/user/generated/colors.json"
+
+[templates.m3colors]
+input_path = "~/.config/matugen/templates/end-4/m3colors.qml.template"
+output_path = "~/.local/state/quickshell/user/generated/m3colors.qml"
+post_hook = "pkill quickshell; while pgrep -x quickshell > /dev/null; do sleep 1; done; quickshell -c ii > /dev/null 2>&1 &"
+
+# ─────────────────────────────────────────────
+# userscripts
+# ─────────────────────────────────────────────
+[templates.catppuccin_lib]
+input_path = "~/.config/matugen/templates/userscripts/lib.less.template"
+output_path = '/home/kushagra/userstyles/lib/lib.less'
+post_command = 'bash ~/.config/matugen/scripts/compile-userstyles.sh &'
+
+# ─────────────────────────────────────────────
+# userscripts
+# ─────────────────────────────────────────────
+[templates.zen_userChrome]
+input_path = '~/.config/matugen/templates/zen/userChrome.css.template'
+output_path = '/home/kushagra/.zen/uhujqlks.Default (release)/chrome/userChrome.css'
+
+[templates.zen_userContent_browser]
+input_path = '~/.config/matugen/templates/zen/userContent.css.template'
+output_path = '/home/kushagra/.zen/uhujqlks.Default (release)/chrome/userContent.css'
+
+# ─────────────────────────────────────────────
+# anki
+# ─────────────────────────────────────────────
+[templates.anki]
+input_path = '~/.config/matugen/templates/anki/colors.json.template'
+output_path = '/home/kushagra/.var/app/net.ankiweb.Anki/data/Anki2/addons21/688199788/themes/colors.json'
+
+# ─────────────────────────────────────────────
+# bagels
+# ─────────────────────────────────────────────
+[templates.bagels]
+input_path = '~/.config/matugen/templates/bagels/themes.py.template'
+output_path = '~/.local/share/uv/tools/bagels/lib/python3.13/site-packages/bagels/themes.py'
+
+# ─────────────────────────────────────────────
+# obsidian
+# ─────────────────────────────────────────────
+[templates.obsidian]
+input_path = '~/.config/matugen/templates/obsidian/theme.css.template'
+output_path = '~/Obsidian/My Vault/.obsidian/snippets/matugen.css'
+
+[templates.obsidian_2]
+input_path = '~/.config/matugen/templates/obsidian/theme.css.template'
+output_path = '~/Obsidian/Dashbaord/.obsidian/snippets/matugen.css'
+
+[templates.tracker]
+input_path = '~/.config/matugen/templates/obsidian/tracker_style.css.template'
+output_path = '~/Obsidian/Dashbaord/.obsidian/plugins/obsidian-tracker/styles.css'

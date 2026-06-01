@@ -1,0 +1,14 @@
+{
+  "Bibata-Modern-Classic": {
+    "desc": "Matugen powered Bibata cursors",
+    "dir": "svg/modern",
+    "colors": [
+      { "match": "#00FF00", "replace": "{{colors.primary.default.hex}}" },
+      { "match": "#0000FF", "replace": "{{colors.outline.default.hex}}" },
+      {
+        "match": "#FF0000",
+        "replace": "{{colors.primary_container.default.hex}}"
+      }
+    ]
+  }
+}

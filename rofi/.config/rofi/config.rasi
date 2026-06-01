@@ -12,9 +12,8 @@ configuration {
 	icon-theme: "Colloid";
 }
 
-window {
+ window {
     /* properties for window widget */
-    transparency:                "real";
     location:                    center;
     anchor:                      center;
     fullscreen:                  false;
@@ -24,11 +23,11 @@ window {
 
     /* properties for all widgets */
     enabled:                     true;
-    border:			 2px solid;
-    border-color:		 @secondary-container;
+    border:                      3px solid;
+    border-color:                @secondary-container;
     border-radius:               15px;
     cursor:                      "default";
-    background-color:            @on-primary-fixed;
+   background-color:            #02040801;
 }
 
 mainbox {
@@ -37,7 +36,7 @@ mainbox {
     background-color:            transparent;
     orientation:                 horizontal;
     children:                    [ "imagebox", "listbox" ];
-}
+} 
 
 imagebox {
     padding:                     20px;
@@ -64,7 +63,7 @@ inputbar {
     spacing:                     10px;
     padding:                     15px;
     border-radius:               10px;
-    background-color:		 @on-primary;
+    background-color:		         @on-primary;
     text-color:			 @on-surface;
     children:                    [ "textbox-prompt-colon", "entry" ];
 }
@@ -116,7 +115,7 @@ listview {
     
     spacing:                     10px;
     background-color:            transparent;
-    text-color:                  @on-surface;
+    text-color:                  @secondary;
     cursor:                      "default";
 }
 
@@ -126,20 +125,15 @@ element {
     padding:                     8px;
     border-radius:               10px;
     background-color:            transparent;
-    text-color:                  @on-surface;
+    text-color:                  @on-secondary;
     cursor:                      pointer;
 }
-element normal.normal {
-    background-color:            inherit;
-    text-color:                  inherit;
-}
-element normal.urgent {
-    background-color:            @error;
-    text-color:                  @on-surface;
-}
+
+element normal.normal,
+element normal.urgent,
 element normal.active {
-    background-color:            @primary;
-    text-color:                  @on-surface;
+    background-color: transparent;
+    text-color: @on-secondary;
 }
 element selected.normal {
     background-color:            @primary;

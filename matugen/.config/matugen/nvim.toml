@@ -1,0 +1,25 @@
+[config]
+version = 2
+caching = true
+
+[theme]
+type = "material-you"
+
+[templates.nvim]
+input_path = "~/.config/matugen/templates/nvim/matugen.lua.template"
+output_path = "~/.config/nvim/colors/matugen.lua"
+
+#[templates.lualine]
+#input_path = "~/.config/matugen/templates/nvim/lualine.lua.template"
+#output_path = "~/.config/nvim/lua/plugins/lualine.lua"
+#post_command = "pgrep nvim && pkill -USR1 nvim 2>/dev/null || true"
+
+#[templates.quickshell]
+#input_path = "~/.config/matugen/templates/end-4/quickshell.json.template"
+#output_path = "~/.local/state/quickshell/user/generated/colors.json"
+#
+#[templates.m3colors]
+#input_path = "~/.config/matugen/templates/end-4/m3colors.qml.template"
+#output_path = "~/.local/state/quickshell/user/generated/m3colors.qml"
+#post_hook = "pkill quickshell; while pgrep -x quickshell > /dev/null; do sleep 1; done; quickshell -c ii > /dev/null 2>&1 &"
+
